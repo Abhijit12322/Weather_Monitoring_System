@@ -108,8 +108,8 @@ The forecasting pipeline is trained to compute 15-minute climate projections bas
 <p align="center">
   <img src="Image/Circuit connection.png" alt="Hardware Connections Circuit Diagram" width="800">
 </p>
----
 
+---
 
 
 ## 🖥️ Base Station Dashboard (Admin Console)
@@ -124,7 +124,6 @@ Provides administrative command and control utilities:
   <img src="Image/BaseStation.png" alt="Base Station Dashboard Interface" width="800">
 </p>
 
----
 
 ## 🌐 Client Portal & Emergency Alerts
 
@@ -188,9 +187,9 @@ CREATE TABLE system_event_log (
 
 * **Backend**: FastAPI, Uvicorn, Python 3, SQLite3, Joblib, Scikit-learn, XGBoost.
 * **Frontend**: Next.js 16 (App Router), React 19, TypeScript, Vanilla CSS (HSL premium UI framework, glassmorphism cards).
-* **Hardware**: Arduino UNO, DHT11, DIY Anemometer, 16x2 LCD.
+* **Hardware**: Arduino UNO, DHT11, DIY Anemometer.
 
----
+
 
 ## ⚙️ Installation & Running
 
@@ -236,12 +235,10 @@ python sensor.py
 * **Mesh Network**: Deploying multi-sensor networks reporting to a single base station.
 * **Mobile Portals**: Developing native iOS and Android apps with push alerts.
 
----
 
 ## 📄 License
 Academic and Research Use Only.
 
----
 
 ## Author
 Developed as part of the Intelligent Weather Station and Predictive AI Portal research project.
