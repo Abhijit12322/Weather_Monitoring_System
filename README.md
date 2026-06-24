@@ -1,13 +1,7 @@
 # 🌦️ Intelligent Weather Station and Predictive AI Portal System
 
 <p align="center">
-  <img src="Image/BaseStation.png" alt="Base Station Admin Console" width="49%">
-  <img src="Image/Client.png" alt="Client Portal Dashboard" width="49%">
-</p>
-
-<p align="center">
-  <sub>📺 <b>Client Demonstration Video Walkthrough</b></sub><br>
-  <video src="Image/Client.mp4" width="100%" controls></video>
+  <img src="Image/BaseStation.png" alt="Base Station Monitoring System" width="800">
 </p>
 
 An IoT-enabled, AI-powered hyperlocal weather monitoring and forecasting platform designed for real-time telemetry acquisition, machine learning-based prediction, emergency advisory broadcasting, and interactive web visualization.
@@ -124,6 +118,10 @@ Provides administrative command and control utilities:
 * **Presets Broadcaster**: Instant dispatch buttons for storms, heatwaves, floods, or clearing alerts.
 * **Scenario Playlist Manager**: Automatically plays back transition playlists (e.g., Monsoon Arrival) to simulate dynamic changes.
 
+<p align="center">
+  <img src="Image/BaseStation.png" alt="Base Station Dashboard Interface" width="800">
+</p>
+
 ---
 
 ## 🌐 Client Portal & Emergency Alerts
@@ -135,6 +133,20 @@ Real-time presentation console for public safety:
   * `warning`: Orange banners for potential hazards like high heat indexes.
   * `danger`: Flashing red fullscreen warning screens for critical conditions (like severe storms and tornadoes), accompanied by alarms.
 * **AI Companion Chatbot**: Direct access to an LLM companion, responding to weather inquiries based on local sensor records.
+
+<p align="center">
+  <img src="Image/Client.png" alt="Client Portal Interface Dashboard" width="800">
+</p>
+
+### 📹 Client Portal Walkthrough Demonstration
+The video below shows the client dashboard dynamically responding to admin alerts and interacting with the AI weather companion chatbot:
+
+<p align="center">
+  <video src="Image/Client.mp4" width="800" controls></video>
+</p>
+<p align="center">
+  <a href="Image/Client.mp4">👉 Click here to watch the Client Demonstration Video if it does not load above.</a>
+</p>
 
 ---
 
