@@ -1,8 +1,7 @@
 # 🌦️ Intelligent Weather Station and Predictive AI Portal System
 
 <p align="center">
-  <a href="https://github.com/Abhijit12322/Weather_Monitoring_System/raw/main/Image/Client.mp4">
-    
+  <a href="https://github.com/Abhijit12322/Weather_Monitoring_System/raw/Image/Client.mp4">
   </a>
   <br>
   <b>Click the dashboard screenshot above to play the Client Demonstration Video (Client.mp4)</b>
