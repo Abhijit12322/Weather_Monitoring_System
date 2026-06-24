@@ -104,6 +104,10 @@ The forecasting pipeline is trained to compute 15-minute climate projections bas
 | **Capacitor (C1)** | Across `M1` | Parallel noise filter across positive/negative motor leads |
 | **Diode (U3)** | Across `M1` | Parallel flyback protection (Cathode to `D3`, Anode to `GND`) |
 
+
+<p align="center">
+  <img src="Image/Circuit Connection.png" alt="Hardware Connections Circuit Diagram" width="800">
+</p>
 ---
 
 
