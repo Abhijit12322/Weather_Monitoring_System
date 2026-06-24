@@ -76,28 +76,33 @@ The forecasting pipeline is trained to compute 15-minute climate projections bas
 ## 🔌 Hardware Design
 
 ### Core Components
-* **Arduino UNO**: Main microcontroller coordinating sensor signal conversion.
-* **DHT11 Sensor**: Ambient temperature and humidity sensor.
-* **DIY Cup Anemometer**: Intercepts wind velocity and calculates rotational frequency.
-* **Red & Blue Status LEDs**: Active visual state indicators for network link and data packet broadcasts.
-* **Decoupling Capacitor**: Suppresses high-frequency electrical noise and vibration interference from the anemometer.
-* **Diode (1N4007)**: Series configuration to protect the main circuit against reverse polarity.
+* **Arduino UNO (U2)**: Main microcontroller managing analog-to-digital signal conversions and frequency calculations.
+* **Analog Temp/Weather Sensor (U1)**: A three-pin sensor (providing `+VS`, `VOUT`, and `GND`) that outputs environmental temperature voltage.
+* **DIY Cup Anemometer (M1)**: A DC motor configuration acting as an anemometer, capturing wind velocity and generating frequency pulses.
+* **Decoupling Capacitor (C1 - 1µF)**: Connected in parallel across the positive and negative terminals of the Anemometer motor to filter high-frequency noise and voltage fluctuations.
+* **Clamping Diode (U3)**: Connected in parallel across the Anemometer motor (cathode to signal line, anode to ground) to protect the input pins against inductive back-EMF spikes during rotation.
+* **LED Indicators**: 
+  * **Red LED (D2)**: Warning state indicator.
+  * **Blue LED (D1)**: Telemetry link status indicator.
+* **Current-Limiting Resistors (R1, R2 - 220Ω)**: Wired in series with the LEDs to prevent overcurrent.
 
 <p align="center">
   <img src="Image/HardwareConnection.png" alt="Hardware Connections Circuit Diagram" width="800">
 </p>
 
 ### Hardware Connections
-| Component | Connection Pin | Pin Description |
+| Schematic Component | Arduino Pin | Connection Description |
 | :--- | :--- | :--- |
-| **DHT11 VCC** | `5V` | 5V Power Supply |
-| **DHT11 GND** | `GND` | Common Ground Reference |
-| **DHT11 DATA** | `D2` | DHT11 Data Channel |
-| **Anemometer Signal** | `D3` | Pulse Frequency Interrupt |
-| **Red LED** | `D7` | Warning State Indicator |
-| **Blue LED** | `D8` | Telemetry Link Status |
-| **Capacitor** | `VCC / GND` | Decoupling Noise Filter |
-| **Diode** | `VIN` | Inline Reverse-Voltage Protection |
+| **Analog Sensor (U1) +VS** | `5V` | 5V Power Supply Line (`U2_5V`) |
+| **Analog Sensor (U1) GND** | `GND` | Common Ground Reference (`U2_GND`) |
+| **Analog Sensor (U1) VOUT**| `A0` | Analog Input Pin 0 (Temperature Data) |
+| **Anemometer Motor (M1) +** | `D3` | Digital Input Pin 3 (Pulse Interrupt Line) |
+| **Anemometer Motor (M1) -** | `GND` | Common Ground Reference |
+| **Red LED (D2) Anode** | `D7` | Digital Output Pin 7 (via **220Ω Resistor R1**) |
+| **Blue LED (D1) Anode** | `D9` | Digital Output Pin 9 (via **220Ω Resistor R2**) |
+| **LED Cathodes (D1, D2)** | `GND` | Common Ground Reference |
+| **Capacitor (C1)** | Across `M1` | Parallel noise filter across positive/negative motor leads |
+| **Diode (U3)** | Across `M1` | Parallel flyback protection (Cathode to `D3`, Anode to `GND`) |
 
 ---
 
