@@ -1,7 +1,7 @@
 # 🌦️ Intelligent Weather Station and Predictive AI Portal System
 
 <p align="center">
-  <video src="Image/Client.mp4" width="800" controls></video>
+  <video src="https://github.com/Abhijit12322/Weather_Monitoring_System/raw/main/Image/Client.mp4" width="800" controls></video>
 </p>
 
 An IoT-enabled, AI-powered hyperlocal weather monitoring and forecasting platform designed for real-time telemetry acquisition, machine learning-based prediction, emergency advisory broadcasting, and interactive web visualization.
@@ -138,15 +138,6 @@ Real-time presentation console for public safety:
   <img src="Image/Client.png" alt="Client Portal Interface Dashboard" width="800">
 </p>
 
-### 📹 Client Portal Walkthrough Demonstration
-The video below shows the client dashboard dynamically responding to admin alerts and interacting with the AI weather companion chatbot:
-
-<p align="center">
-  <video src="Image/Client.mp4" width="800" controls></video>
-</p>
-<p align="center">
-  <a href="Image/Client.mp4">👉 Click here to watch the Client Demonstration Video if it does not load above.</a>
-</p>
 
 ---
 
