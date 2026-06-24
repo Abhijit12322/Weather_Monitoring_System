@@ -1,7 +1,7 @@
 # 🌦️ Intelligent Weather Station and Predictive AI Portal System
 
 <p align="center">
-  <img src="Image/BaseStation.png" alt="Base Station Monitoring System" width="800">
+  <video src="Image/Client.mp4" width="800" controls></video>
 </p>
 
 An IoT-enabled, AI-powered hyperlocal weather monitoring and forecasting platform designed for real-time telemetry acquisition, machine learning-based prediction, emergency advisory broadcasting, and interactive web visualization.
