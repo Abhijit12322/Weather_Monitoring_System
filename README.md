@@ -106,18 +106,7 @@ The forecasting pipeline is trained to compute 15-minute climate projections bas
 
 ---
 
-## 📺 Monitoring and Alert Circuit
 
-Designed to display warning levels and trigger audible sirens locally at the physical base station:
-* **LCD 16x2 Display**: Outputs live Temperature, Humidity, and Wind speed metrics.
-* **Active Piezo Buzzer**: Sounds audible alarms during severe weather events.
-* **LED Status Lights**: Red (Critical Alarm) and Green (Normal System State) indicators.
-
-<p align="center">
-  <img src="Image/Circuit%20connection.png" alt="Monitoring and Alert Circuit Diagram" width="800">
-</p>
-
----
 
 ## 🖥️ Base Station Dashboard (Admin Console)
 
