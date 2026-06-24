@@ -4,777 +4,229 @@ An IoT-enabled, AI-powered hyperlocal weather monitoring and forecasting platfor
 
 ---
 
-# 🚀 Key Features
+## 🚀 Key Features
 
-## 📡 Real-Time Telemetry Acquisition
+### 📡 Real-Time Telemetry Acquisition
+* **Sensor Core**: Collects atmospheric metrics using a **DHT11** sensor (temperature & humidity) and a **DIY Cup Anemometer** (wind speed).
+* **TCP Socket Stream**: Ingests high-frequency sensor telemetry over a custom asynchronous TCP socket server running on **Port 5000**.
+* **OpenWeatherMap Integration**: Automatically fetches and logs real-time barometric pressure data to enrich local sensor readings.
+* **Low-Latency Broadcasts**: Instantly pushes telemetry updates to all active client portals and administrative command interfaces.
 
-* Collects environmental data using DHT11 and DIY Anemometer sensors.
-* Receives telemetry through TCP Socket communication.
-* Socket Server runs on **Port 5000**.
-* Supports real-time sensor streaming.
-* Integrates OpenWeatherMap API for atmospheric pressure data.
+### 🧠 XGBoost Machine Learning Forecasting
+* **Hyperlocal Projections**: Utilizes serialized **XGBoost Regression** models to forecast climate conditions.
+* **Model Files**:
+  * `temp_model.pkl` - Predicts future temperature trends.
+  * `humidity_model.pkl` - Forecasts humidity variations.
+* **Feature Engineering**: Incorporates lag variables, rolling averages, timestamps, and diurnal cycles (sine/cosine curves reflecting solar temperature fluctuations).
+* **Forecast Horizon**: Predicts temperature and humidity changes **15 minutes** into the future.
 
+### 🗄️ Database Logging
+* **SQLite Database**: Persisted locally in `weather_station.db`.
+* **Database Tables**:
+  * `weather_log`: Stores raw sensor readings, pressure indicators, and AI prediction values.
+  * `alert_log`: Logs generated weather advisories and safety warnings.
+  * `system_event_log`: Audits admin logs, WebSocket connections, and manual overrides.
 
----
-
-## 🧠 Machine Learning Forecasting
-
-The forecasting engine utilizes XGBoost Regression Models.
-
-Prediction Models:
-
-```text
-temp_model.pkl
-humidity_model.pkl
-```
-
-Input Features
-
-* Current Temperature
-* Current Humidity
-* Wind Speed
-* Time Features
-* Lag Features
-* Rolling Statistics
-
-
-Predicted Outputs
-
-
-* Temperature after 15 minutes
-* Humidity after 15 minutes
-
-
-Capabilities
-
-
-* Feature Engineering
-* Hyperparameter Tuning
-* Model Evaluation
-* Model Serialization
-* Short-term Forecast Generation
-
-
+### 🔄 WebSocket Communication
+Dual-channel WebSocket architecture for instantaneous synchronization:
+* **`/ws/client` (Client Portal)**: Feeds live readings, predictions, safety alerts, and weather ticker logs to standard clients.
+* **`/ws/admin` (Admin Console)**: Handles manual overrides, telemetry slides, and scenario playbooks.
 
 ---
 
-## 🗄 Database Logging
+## 🏗️ System Architecture
 
-
-Database
-
-
-```text
-weather_station.db
-```
-
-
-Stored Information
-
-
-* Sensor Telemetry
-* Historical Records
-* Prediction Logs
-* Advisories
-* System Event Logs
-
-
----
-
-## 🔄 WebSocket Communication
-
-
-### /ws/client
-
-
-Provides
-
-
-* Live Telemetry
-* Forecast Data
-* Weather Advisories
-* Emergency Notifications
-* Client Synchronization
-
-
-### /ws/admin
-
-
-Provides
-
-
-* Manual Overrides
-* Administrative Commands
-* Alert Broadcasting
-* Configuration Updates
-
-
----
-
-# 🏗 System Architecture
-
-
-Subsystems
-
-
-* Remote Sensing Module
-* FastAPI Backend
-* SQLite Database
-* Machine Learning Engine
-* Base Station Dashboard
-* Client Portal
-
-
-
-Architecture Figure
-
-
-```text
-docs/system_architecture.png
-```
-
-
-
-Features
-
-
-* TCP Socket Communication
-* OpenWeatherMap Integration
-* WebSocket Synchronization
-* XGBoost Forecasting
-* Emergency Broadcasting
-
+The platform consists of a **Remote Sensing Module**, a **FastAPI backend framework** with an integrated **XGBoost Inference Engine**, and a **Next.js admin/client presentation layer**.
 
 <p align="center">
-
-<img src="docs/system_architecture.png">
-
+  <img src="Image/SystemFlow.png" alt="System Flow Architecture Diagram" width="800">
 </p>
 
+### Key Architectural Modules:
+* **Remote Sensor Node**: Polls DHT11 and Cup Anemometer values, streaming them via raw TCP socket.
+* **FastAPI Server**: Ingests sensor data, merges barometric pressure, runs XGBoost predictions, logs entries to SQLite, and broadcasts data.
+* **WebSocket Coordinator**: Handles full-duplex messaging between base stations and clients.
 
 ---
 
-# 📈 Machine Learning Pipeline
+## 📈 Machine Learning Pipeline
 
-
-The forecasting workflow consists of:
-
-
-1. Historical Dataset Collection
-
-2. Data Cleaning
-
-3. Feature Engineering
-
-4. Target Creation
-
-5. Train Test Split
-
-6. Hyperparameter Tuning
-
-7. XGBoost Training
-
-8. Model Evaluation
-
-9. Model Saving
-
-10. Forecast Generation
-
-
-
-
-Train Test Ratio
-
-
-```text
-80 : 20
-```
-
-
-Forecast Horizon
-
-
-```text
-15 Minutes
-```
-
-
-Models
-
-
-```text
-temp_model.pkl
-
-humidity_model.pkl
-```
-
+The forecasting pipeline is trained to compute 15-minute climate projections based on structural lag states and diurnal cycles.
 
 <p align="center">
-
-<img src="docs/ml_pipeline.png">
-
+  <img src="Image/ML_step.png" alt="Machine Learning Pipeline Diagram" width="800">
 </p>
 
-
-
----
-
-# 🔌 Hardware Design
-
-
-Hardware Components
-
-
-### Arduino UNO
-
-
-Main controller.
-
-
-### DHT11
-
-
-Temperature and humidity sensing.
-
-
-### DIY Cup Anemometer
-
-
-Wind speed measurement.
-
-
-### LEDs
-
-
-Red LED
-
-Blue LED
-
-
-Status Indicators.
-
-
-
-### Capacitor
-
-
-Noise suppression.
-
-
-### Diode
-
-
-Reverse polarity protection.
-
-
+1. **Dataset Ingestion**: Collects historical temperature and humidity logs from SQLite database records.
+2. **Feature Engineering**: Develops rolling statistics, temporal features, lag parameters, and diurnal factors.
+3. **Train-Test Partition**: Splits historical data into an `80:20` ratio for training and validation.
+4. **XGBoost Training**: Trains regression models using targeted gradient boosting configurations.
+5. **Model Serialization**: Serializes trained networks into `temp_model.pkl` and `humidity_model.pkl` for rapid local inference.
 
 ---
 
-## Hardware Connections
+## 🔌 Hardware Design
 
-
-
-| Component | Connection |
-|----------|------------|
-| DHT11 VCC | 5V |
-| DHT11 GND | GND |
-| DHT11 DATA | D2 |
-| Anemometer Signal | D3 |
-| Red LED | D7 |
-| Blue LED | D8 |
-| Capacitor | Across Supply |
-| Diode | Series Protection |
-
-
+### Core Components
+* **Arduino UNO**: Main microcontroller coordinating sensor signal conversion.
+* **DHT11 Sensor**: Ambient temperature and humidity sensor.
+* **DIY Cup Anemometer**: Intercepts wind velocity and calculates rotational frequency.
+* **Red & Blue Status LEDs**: Active visual state indicators for network link and data packet broadcasts.
+* **Decoupling Capacitor**: Suppresses high-frequency electrical noise and vibration interference from the anemometer.
+* **Diode (1N4007)**: Series configuration to protect the main circuit against reverse polarity.
 
 <p align="center">
-
-<img src="docs/hardware_design.png">
-
+  <img src="Image/HardwareConnection.png" alt="Hardware Connections Circuit Diagram" width="800">
 </p>
 
-
+### Hardware Connections
+| Component | Connection Pin | Pin Description |
+| :--- | :--- | :--- |
+| **DHT11 VCC** | `5V` | 5V Power Supply |
+| **DHT11 GND** | `GND` | Common Ground Reference |
+| **DHT11 DATA** | `D2` | DHT11 Data Channel |
+| **Anemometer Signal** | `D3` | Pulse Frequency Interrupt |
+| **Red LED** | `D7` | Warning State Indicator |
+| **Blue LED** | `D8` | Telemetry Link Status |
+| **Capacitor** | `VCC / GND` | Decoupling Noise Filter |
+| **Diode** | `VIN` | Inline Reverse-Voltage Protection |
 
 ---
 
-# 📺 Monitoring and Alert Circuit
+## 📺 Monitoring and Alert Circuit
 
-
-Components
-
-
-* LCD 16x2
-* Arduino UNO
-* Buzzer
-* Red LED
-* Green LED
-* Potentiometer
-* 220Ω Resistors
-
-
-
-Functions
-
-
-* Weather Display
-* Warning Indication
-* Audible Alert
-* System Health Monitoring
-
-
+Designed to display warning levels and trigger audible sirens locally at the physical base station:
+* **LCD 16x2 Display**: Outputs live Temperature, Humidity, and Wind speed metrics.
+* **Active Piezo Buzzer**: Sounds audible alarms during severe weather events.
+* **LED Status Lights**: Red (Critical Alarm) and Green (Normal System State) indicators.
 
 <p align="center">
-
-<img src="docs/monitoring_circuit.png">
-
+  <img src="Image/Circuit%20connection.png" alt="Monitoring and Alert Circuit Diagram" width="800">
 </p>
 
+---
+
+## 🖥️ Base Station Dashboard (Admin Console)
+
+Provides administrative command and control utilities:
+* **Real-time Telemetry Grid**: Displays active environmental status and statistics.
+* **Manual Override Controls**: Sliders to override sensor values directly (Temp, Humidity, Wind Speed, Pressure).
+* **Presets Broadcaster**: Instant dispatch buttons for storms, heatwaves, floods, or clearing alerts.
+* **Scenario Playlist Manager**: Automatically plays back transition playlists (e.g., Monsoon Arrival) to simulate dynamic changes.
 
 ---
 
-# 🖥 Base Station Dashboard
+## 🌐 Client Portal & Emergency Alerts
 
-
-Features
-
-
-* Real-time Telemetry
-
-* Forecast Visualization
-
-* System Logs
-
-* CSV Export Facility
-
-* Alert Broadcasting
-
-* Manual Override
-
-
-Capabilities
-
-
-Administrator Interface
-
-Emergency Management
-
-Forecast Monitoring
-
-
+Real-time presentation console for public safety:
+* **Client Presentation dials**: Renders speedometers, temperature scales, and trend charts.
+* **Emergency Alert System**: 
+  * `info`: Blue banners for minor local warnings or advisories.
+  * `warning`: Orange banners for potential hazards like high heat indexes.
+  * `danger`: Flashing red fullscreen warning screens for critical conditions (like severe storms and tornadoes), accompanied by alarms.
+* **AI Companion Chatbot**: Direct access to an LLM companion, responding to weather inquiries based on local sensor records.
 
 ---
 
-# 🌐 Client Portal
+## 🗃️ Database Schema
 
-
-
-Provides
-
-
-* Live Weather Data
-
-* Forecast Reports
-
-* Advisory Banners
-
-* Browser Notifications
-
-* Weather Animations
-
-* Emergency Alerts
-
-
-
-Capabilities
-
-
-Real-time Synchronization
-
-Interactive Visualization
-
-Instant Warning Updates
-
-
-
----
-
-# 🚨 Emergency Advisory System
-
-
-
-Severity Levels
-
-
-### Information
-
-
-General Updates
-
-
-
-### Warning
-
-
-Potential Hazards
-
-
-
-### Critical Danger
-
-
-Emergency Conditions
-
-
-
-Features
-
-
-* Full Screen Overlay
-
-* Flashing Interface
-
-* Browser Notifications
-
-* WebSocket Broadcasting
-
-* Instant Synchronization
-
-
-
----
-
-# 🗃 Database Schema
-
-
-
-Database
-
-
-```text
-weather_station.db
+### Table: `weather_log`
+```sql
+CREATE TABLE weather_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp REAL NOT NULL,
+    temperature REAL NOT NULL,
+    humidity INTEGER NOT NULL,
+    pressure INTEGER,
+    wind_speed REAL,
+    wind_dir TEXT,
+    status TEXT,
+    predict_temp REAL,
+    predict_humidity INTEGER
+);
 ```
 
+### Table: `alert_log`
+```sql
+CREATE TABLE alert_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp REAL NOT NULL,
+    title TEXT NOT NULL,
+    message TEXT NOT NULL,
+    severity TEXT NOT NULL
+);
+```
 
-
-Tables
-
-
-
-### weather_log
-
-
-Stores
-
-
-* Temperature
-
-* Humidity
-
-* Pressure
-
-* Wind Speed
-
-* Prediction Values
-
-
-
-### alert_log
-
-
-Stores
-
-
-* Alerts
-
-* Advisories
-
-* Severity
-
-
-
-### system_event_log
-
-
-Stores
-
-
-* Events
-
-* WebSocket Activities
-
-* Manual Overrides
-
-
+### Table: `system_event_log`
+```sql
+CREATE TABLE system_event_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp REAL NOT NULL,
+    event_type TEXT NOT NULL,
+    message TEXT NOT NULL
+);
+```
 
 ---
 
-# 🛠 Technology Stack
+## 🛠️ Technology Stack
 
-
-## Backend
-
-
-FastAPI
-
-Uvicorn
-
-Python 3
-
-
-SQLite
-
-
-Pandas
-
-
-NumPy
-
-
-Scikit Learn
-
-
-XGBoost
-
-
-Joblib
-
-
+* **Backend**: FastAPI, Uvicorn, Python 3, SQLite3, Joblib, Scikit-learn, XGBoost.
+* **Frontend**: Next.js 16 (App Router), React 19, TypeScript, Vanilla CSS (HSL premium UI framework, glassmorphism cards).
+* **Hardware**: Arduino UNO, DHT11, DIY Anemometer, 16x2 LCD.
 
 ---
 
-## Frontend
+## ⚙️ Installation & Running
 
-
-Next.js 15+
-
-
-React 19
-
-
-TypeScript
-
-
-HTML5
-
-
-CSS3
-
-
-Custom CSS Variables
-
-
-
----
-
-## Hardware
-
-
-Arduino UNO
-
-
-DHT11
-
-
-DIY Anemometer
-
-
-LEDs
-
-
-Capacitor
-
-
-Diode
-
-
-
----
-
-# ⚙ Installation
-
-
-Clone Repository
-
-
+### 1. Set Up the Backend Server
+Create a virtual environment and install the required dependencies:
 ```bash
-git clone https://github.com/Abhijit12322/Weather_Monitoring_System.git
+# Create and activate virtual environment
+python -m venv venv
+# On Windows:
+.\venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
 
-cd weather-station
-```
-
-
-
-Install Backend Dependencies
-
-
-```bash
+# Install dependencies
 pip install -r requirements.txt
-```
 
-
-
-Install Frontend Dependencies
-
-
-```bash
-cd frontend
-
-npm install
-```
-
-
-
----
-
-# ▶ Running the Application
-
-
-Backend
-
-
-```bash
+# Start the FastAPI Server
 python server.py
 ```
+* **API Portal**: `http://localhost:8000`
+* **TCP Socket Listener**: `Port 5000`
 
-
-
-FastAPI
-
-
-```text
-http://localhost:8000
-```
-
-
-
-TCP Socket
-
-
-```text
-Port 5000
-```
-
-
-
-Frontend
-
-
+### 2. Set Up the Next.js Frontend
+Install packages and run the Next.js dev server:
 ```bash
 cd frontend
-
+npm install
 npm run dev
 ```
+* **Admin Dashboard**: `http://localhost:3000` (Access PIN: **`8822`**)
+* **Client Portal**: `http://localhost:3000/client`
 
-
-
-Base Station
-
-
-```text
-http://localhost:3000
-```
-
-
-
-Client Portal
-
-
-```text
-http://localhost:3000/client
-```
-
-
-
-Sensor Simulation
-
-
+### 3. Stream Mock Sensor Data (Optional)
+Run the remote sensor simulator script to feed mock readings to the base station:
 ```bash
 python sensor.py
 ```
 
+---
 
+## 🔮 Future Scope
+* **Extended Forecasting**: Integrating RNN models (LSTM/GRU) for 24h-48h weather projections.
+* **Mesh Network**: Deploying multi-sensor networks reporting to a single base station.
+* **Mobile Portals**: Developing native iOS and Android apps with push alerts.
 
 ---
 
-# 📂 Repository Structure
-
-
-```text
-WeatherStation/
-
-├── frontend/
-├── sensor.py
-├── server.py
-├── temp_model.pkl
-├── humidity_model.pkl
-├── weather_station.db
-├── requirements.txt
-
-├── docs/
-│   ├── system_architecture.png
-│   ├── ml_pipeline.png
-│   ├── hardware_design.png
-│   └── monitoring_circuit.png
-
-└── README.md
-```
-
-
-
----
-
-# 📌 Applications
-
-
-* Hyperlocal Weather Monitoring
-
-* Smart Agriculture
-
-* Environmental Monitoring
-
-* Disaster Management
-
-* Smart Cities
-
-* Educational Research
-
-* Renewable Energy Planning
-
-
-
----
-
-# 🔮 Future Scope
-
-
-* Hourly Forecasting
-
-* Daily Forecasting
-
-* Satellite Integration
-
-* Radar Integration
-
-* Mobile Applications
-
-* Multi-location Deployment
-
-* LSTM Forecast Models
-
-* GRU Forecast Models
-
-
-
----
-
-# 📄 License
-
-
+## 📄 License
 Academic and Research Use Only.
-
 
 ---
 
 ## Author
-
-Developed as part of an Intelligent Weather Station and Predictive AI Portal research project.
+Developed as part of the Intelligent Weather Station and Predictive AI Portal research project.
