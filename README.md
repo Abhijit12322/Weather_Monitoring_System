@@ -2,10 +2,10 @@
 
 <p align="center">
   <a href="https://github.com/Abhijit12322/Weather_Monitoring_System/raw/main/Image/Client.mp4">
-    <img src="Image/Client.png" alt="Intelligent Weather Station Client Dashboard" width="800">
+    
   </a>
   <br>
-  <b>▶️ Click the dashboard screenshot above to play the Client Demonstration Video (Client.mp4)</b>
+  <b>Click the dashboard screenshot above to play the Client Demonstration Video (Client.mp4)</b>
 </p>
 
 An IoT-enabled, AI-powered hyperlocal weather monitoring and forecasting platform designed for real-time telemetry acquisition, machine learning-based prediction, emergency advisory broadcasting, and interactive web visualization.
