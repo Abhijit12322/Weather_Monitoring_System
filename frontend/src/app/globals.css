@@ -1,0 +1,1838 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+    --bg-dark: #070a13;
+    --bg-card: rgba(18, 24, 41, 0.75);
+    --bg-card-hover: rgba(26, 34, 57, 0.9);
+    --border-color: rgba(255, 255, 255, 0.08);
+    
+    --text-primary: #f3f4f6;
+    --text-secondary: #9ca3af;
+    --text-dim: #6b7280;
+    
+    --color-primary: #00d2ff;
+    --color-primary-glow: rgba(0, 210, 255, 0.35);
+    --color-success: #10b981;
+    --color-success-glow: rgba(16, 185, 129, 0.3);
+    --color-warning: #f59e0b;
+    --color-warning-glow: rgba(245, 158, 11, 0.3);
+    --color-danger: #ef4444;
+    --color-danger-glow: rgba(239, 68, 68, 0.45);
+    
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+    -webkit-font-smoothing: antialiased;
+    transition: background 1s ease;
+}
+
+/* Atmospheric Weather-Based Body Backgrounds (Only used on client dashboard) */
+body.weather-bg-clear {
+    background-color: #050b14;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(0, 150, 255, 0.18) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(0, 80, 200, 0.1) 0px, transparent 50%);
+}
+
+body.weather-bg-overcast {
+    background-color: #0b0f14;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(100, 116, 139, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(50, 60, 80, 0.1) 0px, transparent 50%);
+}
+
+body.weather-bg-rainy {
+    background-color: #080916;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(40, 20, 100, 0.1) 0px, transparent 50%);
+}
+
+body.weather-bg-heat {
+    background-color: #160d08;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(220, 38, 38, 0.08) 0px, transparent 50%);
+}
+
+body.weather-bg-storm {
+    background-color: #0d070b;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(239, 68, 68, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(120, 10, 60, 0.1) 0px, transparent 50%);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Layout utilities */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}
+
+h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ffffff 30%, var(--color-primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+h2 {
+    font-size: 1.4rem;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem;
+}
+
+/* Card Styling */
+.card {
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 1.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.card:hover {
+    background: var(--bg-card-hover);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+/* Connectivity Indicator Badge */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.online {
+    background-color: var(--color-success);
+    box-shadow: 0 0 8px var(--color-success);
+    animation: pulse 2s infinite;
+}
+
+.status-dot.offline {
+    background-color: var(--color-danger);
+    box-shadow: 0 0 8px var(--color-danger);
+}
+
+/* Grids */
+.grid-main {
+    display: grid;
+    grid-template-columns: 2.1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .grid-main {
+        grid-template-columns: 1fr;
+    }
+}
+
+.grid-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+/* Gauges Layout (More Interesting UI) */
+.gauges-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.gauge-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 170px;
+}
+
+.gauge-svg {
+    transform: rotate(-90deg);
+    overflow: visible;
+}
+
+.gauge-bg-circle {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.05);
+    stroke-width: 10;
+}
+
+.gauge-value-circle {
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.8s ease-in-out;
+}
+
+.gauge-text {
+    position: absolute;
+    top: 55px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.gauge-number {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.gauge-unit {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.gauge-label {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Table styling */
+.clients-table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.clients-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.clients-table th {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.clients-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    vertical-align: middle;
+}
+
+/* Permission badges */
+.perm-badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.perm-badge.granted {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+.perm-badge.denied {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+.perm-badge.pending {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #fcd34d;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+/* Inputs and Buttons */
+.alert-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.form-input, .form-select, .form-textarea {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-glow);
+}
+
+.form-textarea {
+    resize: none;
+    height: 80px;
+}
+
+.btn-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.btn {
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: #070a13;
+}
+.btn-primary:hover {
+    background-color: #5edeff;
+    box-shadow: 0 0 12px var(--color-primary-glow);
+}
+
+.btn-danger {
+    background-color: var(--color-danger);
+    color: #ffffff;
+}
+.btn-danger:hover {
+    background-color: #f87171;
+    box-shadow: 0 0 12px var(--color-danger-glow);
+}
+
+.btn-secondary {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+.btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Alert Notification Banners */
+.client-alert-banner {
+    border-radius: 14px;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    animation: slideInDown 0.4s ease-out;
+}
+
+.client-alert-banner.info {
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+}
+
+.client-alert-banner.warning {
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: #fcd34d;
+    animation: alert-pulse-warn 2s infinite;
+}
+
+.client-alert-banner.danger {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+    animation: alert-pulse-danger 1.5s infinite;
+}
+
+.alert-content h3 {
+    margin-bottom: 0.25rem;
+    font-size: 1.1rem;
+}
+
+.alert-content p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    opacity: 0.9;
+}
+
+/* Fullscreen Overlay Alarm Modal */
+.overlay-alarm {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(7, 10, 19, 0.96);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 2rem;
+}
+
+.alarm-box {
+    background: linear-gradient(135deg, #18141d 0%, #150a0e 100%);
+    border: 3px solid var(--color-danger);
+    border-radius: 24px;
+    max-width: 600px;
+    width: 100%;
+    padding: 3rem 2rem;
+    text-align: center;
+    box-shadow: 0 0 50px rgba(239, 68, 68, 0.4);
+    animation: zoomIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.alarm-icon {
+    font-size: 4rem;
+    color: var(--color-danger);
+    margin-bottom: 1.5rem;
+    animation: flash 1s infinite;
+}
+
+.alarm-title {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+.alarm-message {
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin-bottom: 2.5rem;
+}
+
+/* Permission Opt-In Card */
+.permission-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px dashed var(--border-color);
+}
+
+.permission-text h4 {
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
+}
+
+.permission-text p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 600px) {
+    .permission-box {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* Animations */
+@keyframes pulse {
+    0% { transform: scale(0.95); opacity: 0.5; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); opacity: 0.5; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+@keyframes alert-pulse-warn {
+    0%, 100% { border-color: rgba(245, 158, 11, 0.3); box-shadow: 0 0 0px rgba(245, 158, 11, 0); }
+    50% { border-color: rgba(245, 158, 11, 0.8); box-shadow: 0 0 12px rgba(245, 158, 11, 0.2); }
+}
+
+@keyframes alert-pulse-danger {
+    0%, 100% { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 0px rgba(239, 68, 68, 0); }
+    50% { border-color: rgba(239, 68, 68, 0.9); box-shadow: 0 0 18px rgba(239, 68, 68, 0.35); }
+}
+
+@keyframes flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+@keyframes slideInDown {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* Sidebar Hamburger Button & Overlay Drawer */
+.hamburger-btn {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.hamburger-btn:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.drawer-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.sidebar-drawer {
+    position: fixed;
+    top: 0;
+    left: -320px;
+    width: 300px;
+    height: 100vh;
+    background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+    border-right: 1px solid var(--border-color);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-drawer.open {
+    left: 0;
+}
+
+.drawer-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.drawer-avatar {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-glow) 100%);
+    border: 2px solid var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    color: #020617;
+    font-family: var(--font-heading);
+    font-weight: bold;
+}
+
+.drawer-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-grow: 1;
+}
+
+.drawer-item {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.85rem 1.25rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+}
+
+.drawer-item:hover, .drawer-item.active {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+
+.drawer-item.active {
+    border-left: 3px solid var(--color-primary);
+    background-color: rgba(0, 210, 255, 0.08);
+}
+
+/* Splash Screen Overlay */
+.splash-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: opacity 0.5s ease;
+}
+
+.splash-spinner {
+    width: 55px;
+    height: 55px;
+    border: 4px dashed var(--color-primary);
+    border-top: 4px solid transparent;
+    border-radius: 50%;
+    animation: spin-loader 1.2s linear infinite;
+    margin-bottom: 1.5rem;
+}
+
+@keyframes spin-loader {
+    to { transform: rotate(360deg); }
+}
+
+/* Login Screen Overlay */
+.login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(7, 10, 19, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9000;
+    padding: 1.5rem;
+}
+
+.login-card {
+    max-width: 800px;
+    width: 100%;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(2, 6, 23, 0.95) 100%);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .login-card {
+        grid-template-columns: 1fr !important;
+        max-width: 450px;
+    }
+    .login-card > div:first-child {
+        border-right: none !important;
+        border-bottom: 1px solid var(--border-color);
+        padding: 2rem 1.25rem !important;
+    }
+    .login-card > div:last-child {
+        padding: 2rem 1.25rem !important;
+    }
+}
+
+/* Rating scale */
+.rating-container {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.star-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-dim);
+    transition: color 0.1s;
+}
+
+.star-btn.active {
+    color: #fbbf24;
+    text-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+}
+
+/* ====================================================================
+   WEATHER NEWS HUB STYLES
+   ==================================================================== */
+
+/* News Marquee / Headline Ticker */
+.news-ticker-container {
+    display: flex;
+    align-items: center;
+    background: rgba(18, 24, 41, 0.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    height: 44px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    position: relative;
+    padding: 0 1rem;
+    box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.2);
+}
+
+.news-ticker-label {
+    background: linear-gradient(135deg, var(--color-danger) 0%, #b91c1c 100%);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 0.3rem 0.65rem;
+    border-radius: 6px;
+    margin-right: 1rem;
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+    z-index: 10;
+}
+
+.news-marquee-wrapper {
+    flex-grow: 1;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.news-marquee-content {
+    display: flex;
+    white-space: nowrap;
+    gap: 3.5rem;
+    animation: marquee-scroll 35s linear infinite;
+}
+
+.news-marquee-content:hover {
+    animation-play-state: paused;
+    cursor: pointer;
+}
+
+.ticker-item {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.ticker-item:hover {
+    color: var(--color-primary);
+}
+
+.ticker-item .bullet {
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-primary);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--color-primary);
+    display: inline-block;
+}
+
+.ticker-item.severe-bullet .bullet {
+    background-color: var(--color-danger);
+    box-shadow: 0 0 6px var(--color-danger);
+}
+
+@keyframes marquee-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* News Grid Layout */
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+/* News Cards */
+.news-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 250px;
+    position: relative;
+    overflow: hidden;
+}
+
+.news-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--color-primary);
+    opacity: 0.8;
+}
+
+.news-card.severe::before {
+    background: var(--color-danger);
+}
+.news-card.local::before {
+    background: var(--color-primary);
+}
+.news-card.global::before {
+    background: var(--color-warning);
+}
+.news-card.climate::before {
+    background: var(--color-success);
+}
+
+.news-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.85rem;
+}
+
+.news-card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.45;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: color 0.2s;
+}
+
+.news-card:hover .news-card-title {
+    color: var(--color-primary);
+}
+
+.news-card-summary {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin-bottom: 1.25rem;
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.news-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    padding-top: 0.85rem;
+    margin-top: auto;
+}
+
+.news-source-tag {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    font-weight: 600;
+}
+
+/* Category Badges */
+.category-badge {
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+}
+
+.category-badge.severe {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.category-badge.local {
+    background: rgba(0, 210, 255, 0.12);
+    color: #a5f3fc;
+    border: 1px solid rgba(0, 210, 255, 0.3);
+}
+
+.category-badge.global {
+    background: rgba(245, 158, 11, 0.12);
+    color: #fde68a;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.category-badge.climate {
+    background: rgba(16, 185, 129, 0.12);
+    color: #a7f3d0;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Modal Overlay Detailed News */
+.news-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(7, 10, 19, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 1.5rem;
+}
+
+.news-modal-content {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.98) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    max-width: 650px;
+    width: 100%;
+    padding: 2.5rem;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+    animation: zoomIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+}
+
+.news-modal-close {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    background: rgba(255,255,255,0.05);
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.25rem;
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.news-modal-close:hover {
+    background: rgba(255,255,255,0.15);
+    color: #ffffff;
+}
+
+.news-modal-title {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    line-height: 1.35;
+}
+
+.news-modal-body {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+/* Dashboard Video Hub & News Layout */
+.dashboard-news-section {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .dashboard-news-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+.news-video-container {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    background: #000;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.news-video-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.live-feed-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(239, 68, 68, 0.95);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 0.25rem 0.55rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 10px rgba(239, 68, 68, 0.4);
+    z-index: 5;
+}
+
+.live-feed-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    animation: flash 1s infinite;
+}
+
+/* Dashboard News Headlines List */
+.dashboard-news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: 330px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.dashboard-news-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.85rem 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 3.5px solid var(--color-primary);
+}
+
+.dashboard-news-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(3px);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.dashboard-news-item.severe {
+    border-left-color: var(--color-danger);
+}
+.dashboard-news-item.local {
+    border-left-color: var(--color-primary);
+}
+.dashboard-news-item.global {
+    border-left-color: var(--color-warning);
+}
+.dashboard-news-item.climate {
+    border-left-color: var(--color-success);
+}
+
+/* ====================================================================
+   METEOROLOGICAL & CONTROL ENHANCEMENTS
+   ==================================================================== */
+
+/* 1. Ambient Weather Particles Background Canvas */
+.ambient-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    transition: opacity 1.5s ease-in-out;
+}
+
+/* 2. Voice Announcer Toggle Button */
+.voice-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    padding: 0.4rem 0.8rem;
+    border-radius: 9999px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.voice-toggle-btn:hover {
+    background: rgba(0, 210, 255, 0.1);
+    color: #ffffff;
+    border-color: rgba(0, 210, 255, 0.3);
+}
+
+.voice-toggle-btn.speaking {
+    border-color: var(--color-success);
+    color: #ffffff;
+    box-shadow: 0 0 8px var(--color-success-glow);
+    animation: voice-pulse 1.5s infinite;
+}
+
+@keyframes voice-pulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; transform: scale(1.03); }
+}
+
+/* 3. Forecast Widget Layouts */
+.forecast-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+/* Hourly scrolling outlook list */
+.hourly-container {
+    display: flex;
+    gap: 0.85rem;
+    overflow-x: auto;
+    padding-bottom: 0.75rem;
+    scrollbar-width: thin;
+}
+
+.hourly-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 85px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    padding: 0.85rem 0.5rem;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.hourly-card:hover {
+    background: rgba(0, 210, 255, 0.05);
+    border-color: rgba(0, 210, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.hourly-time {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.hourly-temp {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0.4rem 0;
+    color: #ffffff;
+}
+
+.hourly-pop {
+    font-size: 0.7rem;
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-top: 0.25rem;
+}
+
+/* 7-Day Forecast Grid List */
+.daily-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.daily-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1.5fr 1fr 1.2fr;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.daily-row:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.daily-day {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #ffffff;
+}
+
+.daily-status-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.daily-rain-chance {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.daily-temps {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+}
+
+.daily-temp-max {
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.daily-temp-min {
+    color: var(--text-dim);
+}
+
+/* 4. Regional Coordinate Canvas Map */
+.map-canvas-container {
+    position: relative;
+    width: 100%;
+    height: 380px;
+    background: rgba(7, 10, 19, 0.5);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.map-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.map-control-overlay {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(18, 24, 41, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    z-index: 10;
+}
+
+.map-legend {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.legend-color {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+}
+
+/* 5. Automation Scenarios Controls inside Admin Console */
+.scenario-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.scenario-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.85rem 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    align-items: center;
+}
+
+.scenario-btn:hover {
+    background: rgba(0, 210, 255, 0.08);
+    border-color: var(--color-primary);
+}
+
+.scenario-btn.active {
+    background: rgba(0, 210, 255, 0.15);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 10px var(--color-primary-glow);
+}
+
+.scenario-btn-icon {
+    font-size: 1.4rem;
+}
+
+.scenario-btn-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.scenario-timeline-box {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.scenario-progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.scenario-progress-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.scenario-progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-primary) 0%, #0099ff 100%);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+/* ====================================================================
+   AI WEATHER ASSISTANT CHAT SYSTEM
+   ==================================================================== */
+
+.ai-chat-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 380px;
+    height: 100%;
+}
+
+.ai-chat-messages {
+    flex-grow: 1;
+    height: 250px;
+    overflow-y: auto;
+    padding: 0.85rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    scrollbar-width: thin;
+}
+
+.ai-message {
+    max-width: 82%;
+    padding: 0.65rem 0.85rem;
+    border-radius: 14px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.ai-message.assistant {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    border-bottom-left-radius: 2px;
+}
+
+.ai-message.user {
+    align-self: flex-end;
+    background: linear-gradient(135deg, var(--color-primary) 0%, #0099ff 100%);
+    color: #070a13;
+    font-weight: 500;
+    border-bottom-right-radius: 2px;
+    box-shadow: 0 4px 10px rgba(0, 210, 255, 0.2);
+}
+
+.ai-chat-form {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.ai-chat-input {
+    flex-grow: 1;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--border-color);
+    color: #ffffff;
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.88rem;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.ai-chat-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-glow);
+}
+
+.ai-chat-send {
+    background: var(--color-primary);
+    color: #070a13;
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.ai-chat-send:hover {
+    background: #5edeff;
+    box-shadow: 0 0 8px var(--color-primary-glow);
+    transform: scale(1.02);
+}
+
+/* Download Logs Panel Link Styling */
+.db-download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    padding: 0.45rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-success);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.db-download-btn:hover {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 8px var(--color-success-glow);
+}
+
+/* ====================================================================
+   BASE STATION ADMIN CONSOLE SPECIFIC UPGRADES
+   ==================================================================== */
+
+/* High-Density 3-Column Layout */
+.grid-admin-three-col {
+    display: grid;
+    grid-template-columns: 280px 1.2fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 1200px) {
+    .grid-admin-three-col {
+        grid-template-columns: 320px 1fr;
+    }
+}
+
+@media (max-width: 900px) {
+    .grid-admin-three-col {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Real-time SVG Trend Chart */
+.chart-card-glow {
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-grid-line {
+    stroke: rgba(255, 255, 255, 0.04);
+    stroke-width: 1;
+}
+
+.chart-axis-line {
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 1.5;
+}
+
+.chart-line-temp {
+    stroke: var(--color-primary);
+    stroke-width: 2.5;
+    fill: none;
+    stroke-linecap: round;
+    filter: drop-shadow(0px 2px 5px var(--color-primary-glow));
+}
+
+.chart-line-hum {
+    stroke: var(--color-success);
+    stroke-width: 2.5;
+    fill: none;
+    stroke-linecap: round;
+    filter: drop-shadow(0px 2px 5px var(--color-success-glow));
+}
+
+.chart-marker-temp {
+    fill: var(--color-primary);
+    stroke: #070a13;
+    stroke-width: 2;
+    transition: r 0.2s ease;
+}
+
+.chart-marker-hum {
+    fill: var(--color-success);
+    stroke: #070a13;
+    stroke-width: 2;
+    transition: r 0.2s ease;
+}
+
+.chart-marker-temp:hover, .chart-marker-hum:hover {
+    r: 6;
+    cursor: pointer;
+}
+
+/* Base Station System Log Console */
+.admin-log-console {
+    background: rgba(4, 6, 12, 0.9);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.8rem;
+    height: 165px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.6);
+    scrollbar-width: thin;
+}
+
+.admin-log-entry {
+    line-height: 1.4;
+    color: var(--text-secondary);
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+}
+
+.admin-log-time {
+    color: var(--text-dim);
+    flex-shrink: 0;
+}
+
+.admin-log-text {
+    word-break: break-all;
+}
+
+.admin-log-entry.system .admin-log-text {
+    color: var(--color-primary);
+}
+
+.admin-log-entry.alert .admin-log-text {
+    color: var(--color-danger);
+    font-weight: 600;
+}
+
+.admin-log-entry.success .admin-log-text {
+    color: var(--color-success);
+}
+
+.admin-log-entry.warning .admin-log-text {
+    color: var(--color-warning);
+}
+
+/* Override indicators and glowing range inputs */
+.override-indicator-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+}
+
+.override-indicator-pill.active {
+    background: rgba(0, 210, 255, 0.08);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    box-shadow: 0 0 8px var(--color-primary-glow);
+    animation: flash-border 2s infinite;
+}
+
+@keyframes flash-border {
+    0%, 100% { border-color: rgba(0, 210, 255, 0.3); }
+    50% { border-color: rgba(0, 210, 255, 0.9); }
+}
+
+.glow-slider {
+    width: 100%;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+    filter: drop-shadow(0 0 2px var(--color-primary-glow));
+    transition: filter 0.2s;
+}
+
+.glow-slider:hover {
+    filter: drop-shadow(0 0 5px var(--color-primary-glow));
+}
+
+.glow-slider.success {
+    accent-color: var(--color-success);
+    filter: drop-shadow(0 0 2px var(--color-success-glow));
+}
+
+.glow-slider.success:hover {
+    filter: drop-shadow(0 0 5px var(--color-success-glow));
+}
+
+/* ====================================================================
+   CYBER SECURITY LOGIN PORTAL (SIMPLIFIED & USER FRIENDLY)
+   ==================================================================== */
+
+.security-login-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at center, #0e1322 0%, #060913 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 1.5rem;
+}
+
+.security-card {
+    max-width: 400px;
+    width: 100%;
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2.25rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+}
+
+.security-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.security-subtitle {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.logout-btn-header {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.45rem 0.85rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.logout-btn-header:hover {
+    background: #ef4444;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}
+
+/* Base Station Responsive Two Column Grid */
+.grid-admin-two-col {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 960px) {
+    .grid-admin-two-col {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
