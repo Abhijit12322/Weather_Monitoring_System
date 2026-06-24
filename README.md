@@ -106,7 +106,7 @@ The forecasting pipeline is trained to compute 15-minute climate projections bas
 
 
 <p align="center">
-  <img src="Image/Circuit Connection.png" alt="Hardware Connections Circuit Diagram" width="800">
+  <img src="Image/Circuit connection.png" alt="Hardware Connections Circuit Diagram" width="800">
 </p>
 ---
 
