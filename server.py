@@ -20,6 +20,8 @@ from typing import Dict, Set, Optional, Any, List
 import socket
 import threading
 import re
+import serial
+import serial.tools.list_ports
 
 # Database configurations for logging telemetry
 MODEL_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -385,83 +387,114 @@ def process_predictions():
         weather_state["predict_temp"] = float(round(weather_state["temperature"] + 0.3, 1))
         weather_state["predict_humidity"] = int(max(10, min(100, weather_state["humidity"] - 1)))
 
-async def handle_socket_client(reader, writer):
-    global weather_state, manual_mode
-    addr = writer.get_extra_info('peername')
-    print(f"[Remote Sensor Socket] Connection established by remote device: {addr}")
-    weather_state["arduino_connected"] = True
-    log_system_event_to_db("Sensor Connection", f"Remote sensor established connection from {addr}")
+serial_running = False
+serial_thread = None
+
+def run_serial_listener(loop):
+    global weather_state, serial_running, manual_mode
+    print("[Serial Listener] Background thread started.")
     
-    # Broadcast connection state immediately
-    await broadcast_weather_data()
-    
-    temp_val = None
-    hum_val = None
-    wind_val = None
-    buffer = ""
-    
-    try:
-        while True:
-            data = await reader.read(1024)
-            if not data:
-                break
-            
-            buffer += data.decode('utf-8', errors='ignore')
-            
-            while "\n" in buffer:
-                line, buffer = buffer.split("\n", 1)
-                line = line.strip()
-                if not line:
-                    continue
-                
-                if "Temperature" in line:
-                    match = re.search(r"Temperature\s*:\s*([\d\.]+)", line)
-                    if match:
-                        temp_val = float(match.group(1))
-                elif "Humidity" in line:
-                    match = re.search(r"Humidity\s*:\s*([\d\.]+)", line)
-                    if match:
-                        hum_val = float(match.group(1))
-                elif "Wind Speed" in line:
-                    match = re.search(r"Wind Speed\s*:\s*([\d\.]+)", line)
-                    if match:
-                        wind_val = round(float(match.group(1)) / 3.6, 2)
-            
-            if temp_val is not None:
-                weather_state["temperature"] = temp_val
-            if hum_val is not None:
-                weather_state["humidity"] = hum_val
-            if wind_val is not None:
-                weather_state["wind_speed"] = wind_val
-            
-            if not manual_mode:
-                if hum_val is not None:
-                    if hum_val > 85:
-                        weather_state["status"] = "Rainy"
-                    elif hum_val > 70:
-                        weather_state["status"] = "Overcast"
-                    elif hum_val > 50:
-                        weather_state["status"] = "Partly Cloudy"
-                    else:
-                        weather_state["status"] = "Clear Skies"
-                weather_state["timestamp"] = time.time()
-                
-            # Broadcast the parsed telemetry immediately to dashboards
-            await broadcast_weather_data()
-            
-    except Exception as e:
-        print(f"[Remote Sensor Socket] Connection error with {addr}: {e}")
-    finally:
+    while serial_running:
         try:
-            writer.close()
-            await writer.wait_closed()
-        except Exception:
-            pass
-        print(f"[Remote Sensor Socket] Connection closed by {addr}.")
-        weather_state["arduino_connected"] = False
-        log_system_event_to_db("Sensor Connection", f"Remote sensor connection closed by {addr}")
-        # Broadcast disconnection state immediately
-        await broadcast_weather_data()
+            ports = list(serial.tools.list_ports.comports())
+            target_port = None
+            
+            # Find candidate ports
+            for p in ports:
+                desc = p.description.lower()
+                if any(term in desc for term in ["arduino", "ch340", "usb serial", "ftdi", "prolific", "cp210"]):
+                    target_port = p.device
+                    break
+            
+            if not target_port and ports:
+                target_port = ports[0].device
+                
+            if not target_port:
+                if weather_state.get("arduino_connected"):
+                    weather_state["arduino_connected"] = False
+                    log_system_event_to_db("Sensor Connection", "Arduino unplugged (no serial ports found)")
+                    asyncio.run_coroutine_threadsafe(broadcast_weather_data(), loop)
+                # Wait and scan again
+                for _ in range(5):
+                    if not serial_running:
+                        break
+                    time.sleep(1)
+                continue
+                
+            print(f"[Serial Listener] Attempting connection on port {target_port} at 9600 baud...")
+            
+            with serial.Serial(target_port, 9600, timeout=2) as ser:
+                print(f"[Serial Listener] Connected to Arduino on {target_port}!")
+                weather_state["arduino_connected"] = True
+                log_system_event_to_db("Sensor Connection", f"Connected to Arduino on serial port {target_port}")
+                asyncio.run_coroutine_threadsafe(broadcast_weather_data(), loop)
+                
+                temp_val = None
+                hum_val = None
+                wind_val = None
+                
+                while serial_running:
+                    line_bytes = ser.readline()
+                    if not line_bytes:
+                        continue
+                    
+                    try:
+                        line = line_bytes.decode('utf-8', errors='ignore').strip()
+                    except Exception:
+                        continue
+                        
+                    if not line:
+                        continue
+                        
+                    updated = False
+                    if "Temperature" in line:
+                        match = re.search(r"Temperature\s*:\s*([\d\.]+)", line)
+                        if match:
+                            temp_val = float(match.group(1))
+                            weather_state["temperature"] = temp_val
+                            updated = True
+                    elif "Humidity" in line:
+                        match = re.search(r"Humidity\s*:\s*([\d\.]+)", line)
+                        if match:
+                            hum_val = float(match.group(1))
+                            weather_state["humidity"] = hum_val
+                            updated = True
+                    elif "Wind Speed" in line:
+                        match = re.search(r"Wind Speed\s*:\s*([\d\.]+)", line)
+                        if match:
+                            wind_val = round(float(match.group(1)) / 3.6, 2)
+                            weather_state["wind_speed"] = wind_val
+                            updated = True
+                            
+                    if updated:
+                        if not manual_mode:
+                            if hum_val is not None:
+                                if hum_val > 85:
+                                    weather_state["status"] = "Rainy"
+                                elif hum_val > 70:
+                                    weather_state["status"] = "Overcast"
+                                elif hum_val > 50:
+                                    weather_state["status"] = "Partly Cloudy"
+                                else:
+                                    weather_state["status"] = "Clear Skies"
+                            weather_state["timestamp"] = time.time()
+                            
+                        # Schedule broadcast on event loop
+                        asyncio.run_coroutine_threadsafe(broadcast_weather_data(), loop)
+                        
+        except (serial.SerialException, OSError) as e:
+            print(f"[Serial Listener] Serial error: {e}")
+            if weather_state.get("arduino_connected"):
+                weather_state["arduino_connected"] = False
+                log_system_event_to_db("Sensor Connection", f"Serial connection lost: {e}")
+                asyncio.run_coroutine_threadsafe(broadcast_weather_data(), loop)
+            # Wait before attempting reconnect
+            for _ in range(5):
+                if not serial_running:
+                    break
+                time.sleep(1)
+                
+    print("[Serial Listener] Background thread exiting.")
 
 async def refresh_openweather_pressure_task():
     global weather_state, manual_mode
@@ -888,17 +921,20 @@ def generate_forecast_projections(weather: Dict[str, Any]) -> Dict[str, Any]:
         
     return {"hourly": hourly, "daily": daily}
 
-# Lifespan handler that boots up AI models and simulator
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    global serial_running, serial_thread
     # Startup
     init_db()
     load_models()
     asyncio.create_task(refresh_news_feed())
     
-    # Start socket telemetry listener server
-    socket_server = await asyncio.start_server(handle_socket_client, '0.0.0.0', 5000)
-    print(f"[Remote Sensor Socket] Listening for TCP connections on 0.0.0.0:5000")
+    # Start serial telemetry listener thread
+    serial_running = True
+    loop = asyncio.get_running_loop()
+    serial_thread = threading.Thread(target=run_serial_listener, args=(loop,), daemon=True)
+    serial_thread.start()
+    print("[Serial Listener] Started serial telemetry background thread.")
     
     # Start OpenWeatherMap pressure tracking task
     pressure_tracker = asyncio.create_task(refresh_openweather_pressure_task())
@@ -906,8 +942,7 @@ async def lifespan(app: FastAPI):
     simulator = asyncio.create_task(weather_simulator_task())
     yield
     # Shutdown
-    socket_server.close()
-    await socket_server.wait_closed()
+    serial_running = False
     
     pressure_tracker.cancel()
     simulator.cancel()
@@ -915,6 +950,7 @@ async def lifespan(app: FastAPI):
         await asyncio.gather(pressure_tracker, simulator, return_exceptions=True)
     except Exception:
         pass
+
 
 # Initialize FastAPI App
 app = FastAPI(title="Weather Station Server", lifespan=lifespan)
